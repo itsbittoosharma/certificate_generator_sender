@@ -31,10 +31,9 @@ function createCertificates() {
   var statusIndex = headers.indexOf("status");
   
   // Iterate through each row to capture individual details
-  for (var i = 1; i < values.length; i++) {
-    var rowData = values[i];
+  for (var j = 1; j < values.length; j++) {
+    var rowData = values[j];
     var studName = rowData[studNameIndex];
-    
     // Make a copy of the Slide template and rename it with student name
     var tempFolder = DriveApp.getFolderById(tempFolderId);
     var studSlideId = template.makeCopy(tempFolder).setName(studName).getId();        
@@ -44,30 +43,32 @@ function createCertificates() {
     studSlide.replaceAllText("Name", studName); // Replace all instances of "Student Name" from the template with the actual value from the spreadsheet
     
     // Update the spreadsheet with the new Slide Id and status
-    sheet.getRange(i + 1, studSlideIndex + 1).setValue(studSlideId);
-    sheet.getRange(i + 1, statusIndex + 1).setValue("CREATED");
+    sheet.getRange(j + 1, studSlideIndex + 1).setValue(studSlideId);
+    sheet.getRange(j + 1, statusIndex + 1).setValue("CREATED");
+    // using below funct to ensure that previous code output is written to spreadsheet before continuing
     SpreadsheetApp.flush();
   }
 }
+
 
 /**
  * Send an email to each individual student
  * with a PDF attachment of their appreciation certificate
  */
 function sendCertificates() {
-  
   // Get all student data from the spreadsheet and identify the headers
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var values = sheet.getDataRange().getValues();
   var headers = values[0];
+
   var studNameIndex = headers.indexOf("name");
   var studEmailIndex = headers.indexOf("email");
   var studSlideIndex = headers.indexOf("certificate_slide");
   var statusIndex = headers.indexOf("status");
-  
+  //determining details of individuals, iterating using for loop
   // Iterate through each row to capture individual details
-  for (var i = 1; i < values.length; i++) {
-    var rowData = values[i];
+  for (var k = 1; k < values.length; i++) {
+    var rowData = values[k];
     var studName = rowData[studNameIndex];
     var studSlideId = rowData[studSlideIndex];
     var studEmail = rowData[studEmailIndex];
